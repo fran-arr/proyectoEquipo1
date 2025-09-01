@@ -1,4 +1,6 @@
-import psutil, platform, os
+import psutil
+import platform
+import os
 
 def obtener_datos():
     datos = {}
@@ -20,22 +22,18 @@ def obtener_datos():
     mem = psutil.virtual_memory()
     datos["ram"] = mem.percent   # porcentaje (float)
 
-    # Disco
-    disco = psutil.disk_usage('/')
+    # Disco (unidad C:\ en Windows)
+    disco = psutil.disk_usage('C:\\')
     datos["disco"] = disco.percent   # porcentaje (float)
 
     # Red (hacemos ping a Google para probar conectividad)
-    if platform.system().lower() == "windows":
-        response = os.system("ping -n 1 google.com >nul 2>&1")
-    else:
-        response = os.system("ping -c 1 google.com > /dev/null 2>&1")
+    response = os.system("ping -n 1 google.com >nul 2>&1")
     datos["red"] = "Conectado" if response == 0 else "Sin conexión"
 
     # Sistema
     datos["sistema"] = platform.system() + " " + platform.release()
 
     return datos
-
 
 def diagnosticar_pc():
     datos = obtener_datos()
@@ -58,7 +56,6 @@ def diagnosticar_pc():
         return "⚠️ No hay conexión a internet. Revisa el adaptador de red o la configuración."
 
     return "✅ No se detectaron fallas graves en el sistema."
-
 
 # Ejecución principal
 if __name__ == "__main__":
