@@ -1,15 +1,17 @@
+#Aqui importamos las librerias
 import psutil
 import platform
 import os
 
+#En esta parte se crea un diccionario donde se almacenara los datos con su respectivas claves-valores
 def obtener_datos():
     datos = {}
 
-    # Estado de la batería
+    # Bloque de obtencion del estado de la batería
     try:
         bateria = psutil.sensors_battery()
         if bateria:
-            datos["bateria"] = bateria.percent       # porcentaje (float)
+            datos["bateria"] = bateria.percent       
             datos["cargando"] = bateria.power_plugged
         else:
             datos["bateria"] = None
@@ -18,23 +20,24 @@ def obtener_datos():
         datos["bateria"] = None
         datos["cargando"] = None
 
-    # Memoria RAM
+    # Obtencion de la memoria RAM
     mem = psutil.virtual_memory()
-    datos["ram"] = mem.percent   # porcentaje (float)
+    datos["ram"] = mem.percent   
 
-    # Disco (unidad C:\ en Windows)
+    # Obtencion del disco (unidad C:\ en nuestro dispositivo Windows)
     disco = psutil.disk_usage('C:\\')
-    datos["disco"] = disco.percent   # porcentaje (float)
+    datos["disco"] = disco.percent   
 
-    # Red (hacemos ping a Google para probar conectividad)
+    # Obtencion de la red (hacemos ping a Google para probar conectividad)
     response = os.system("ping -n 1 google.com >nul 2>&1")
     datos["red"] = "Conectado" if response == 0 else "Sin conexión"
 
-    # Sistema
+    # Obtencion del sistema operativo y su version
     datos["sistema"] = platform.system() + " " + platform.release()
 
     return datos
 
+#Llamamos método obtener_datos() y guardamos su resultado
 def diagnosticar_pc():
     datos = obtener_datos()
     print("Datos detectados:", datos)
