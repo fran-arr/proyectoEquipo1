@@ -5,15 +5,15 @@
 
 ## Requisitos para ejecutar el programa
 - **Python 3.8** o superior
-- Librerías:
+## Librerías:
   - "psutil": Significa “process and system utilities” y es una librería externa de Python, esta permite acceder a información detallada sobre el sistema operativo y el hardware de la computadora.
   - "plataform": Es una ibrería incluida en Python que permite obtener información del sistema operativo y la plataforma de hardware.
   - "os": Es una libreria que jecutar comandos y manejar recursos del sistema.
 
 
-##Verificacion del sistema en la terminal
+## Verificacion del sistema en la terminal
  - Verificar la version de python con python --version
  - Verificar instalacion de psutil, comando de instalación (pip install psutil)
 
-##Ejecucion
+## Ejecucion
  - python "nombre del proyecto".py
