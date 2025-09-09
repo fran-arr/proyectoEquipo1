@@ -15,5 +15,5 @@
  - Verificar la version de python con python --version
  - Verificar instalacion de psutil, comando de instalación (pip install psutil)
 
-## Ejecucion
- - python "nombre del proyecto".py
+## Ejecucion en la terminal
+ - py "nombre del proyecto".py
