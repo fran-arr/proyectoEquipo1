@@ -1,8 +1,7 @@
 # Sistema para diagnóstico de fallas en la computadora
 
 ## Descripcion de nuestro proyecto
-- Este codigo consiste en un sistema desarrollado en Python que permite diagnosticar **fallas comunes en computadoras**, utilizando reglas sencillas **IF–THEN**. El sistema analiza en tiempo real datos del hardware y del sistema operativo, incluyendo batería, memoria RAM, disco y  -- - conectividad de red, y proporciona un diagnóstico sencillo de entender para el usuario.  
----
+- Este codigo consiste en un sistema desarrollado en Python que permite diagnosticar **fallas comunes en computadoras**, utilizando reglas sencillas **IF–THEN**. El sistema analiza en tiempo real datos del hardware y del sistema operativo, las cuales son batería, memoria RAM, disco y conectividad de red, y proporciona un diagnóstico sencillo de entender para el usuario. 
 
 ## Requisitos para ejecutar el programa
 - **Python 3.8** o superior
@@ -12,8 +11,8 @@
   - "os": Es una libreria que jecutar comandos y manejar recursos del sistema.
 
 
-##Verificacion del sistema
- - Verificar la vcersino del python con python --version
+##Verificacion del sistema en la terminal
+ - Verificar la version de python con python --version
  - Verificar instalacion de psutil, comando de instalación (pip install psutil)
 
 ##Ejecucion
