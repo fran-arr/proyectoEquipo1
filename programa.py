@@ -42,31 +42,31 @@ def obtener_datos():
 # Llamamos método obtener_datos() y guardamos su resultado
 def diagnosticar_pc():
     datos = obtener_datos()
-    diagnostico = ""
+    diagnostico = []
 
     # Reglas IF–THEN
     if datos["bateria"] is not None:
         if datos["bateria"] < 10 and not datos["cargando"]:
-            diagnostico = "⚠️ Posible problema de batería: carga muy baja y no conectado al cargador."
+            diagnostico.append("⚠️ Posible problema de batería: carga muy baja y no conectado al cargador.")
         elif datos["bateria"] == 100 and datos["cargando"]:
-            diagnostico = "ℹ️ La batería está totalmente cargada y conectada al cargador."
+            diagnostico.append("ℹ️ La batería está totalmente cargada y conectada al cargador.")
 
     if datos["ram"] > 90:
-        diagnostico = "⚠️ La memoria RAM está muy saturada, posible problema de rendimiento."
+        diagnostico.append("⚠️ La memoria RAM está muy saturada, posible problema de rendimiento.")
 
     if datos["disco"] > 90:
-        diagnostico = "⚠️ El disco está casi lleno, puede causar lentitud."
+        diagnostico.append("⚠️ El disco está casi lleno, puede causar lentitud.")
 
     if datos["red"] == "Sin conexión":
-        diagnostico = "⚠️ No hay conexión a internet. Revisa el adaptador de red o la configuración."
+        diagnostico.append("⚠️ No hay conexión a internet. Revisa el adaptador de red o la configuración.")
 
-    if diagnostico == "":
-        diagnostico = "✅ No se detectaron fallas graves en el sistema."
+    if not diagnostico:
+        diagnostico.append("✅ No se detectaron fallas graves en el sistema.")
 
     # Guardar en JSON
     guardar_json(datos, diagnostico)
 
-    return diagnostico
+    return datos, diagnostico
 
 # Función para guardar los resultados en un archivo JSON
 def guardar_json(datos, diagnostico):
@@ -94,7 +94,22 @@ def guardar_json(datos, diagnostico):
 
 # Ejecución principal
 if __name__ == "__main__":
-    resultado = diagnosticar_pc()
-    print(resultado)
-    print("✅ Los resultados fueron guardados en 'diagnostico_pc.json'")
+    datos, resultado = diagnosticar_pc()
+
+    print("\n📊 RESULTADO DEL DIAGNÓSTICO")
+    print("-"*50)
+    print(f"Sistema operativo: {datos['sistema']}")
+    print(f"RAM utilizada     : {datos['ram']}%")
+    print(f"Disco utilizado   : {datos['disco']}%")
+    print(f"Estado red        : {datos['red']}")
+    if datos['bateria'] is not None:
+        print(f"Batería           : {datos['bateria']}% (Cargando: {datos['cargando']})")
+    else:
+        print("Batería           : No disponible")
+
+    print("\n🔎 Diagnóstico:")
+    for r in resultado:
+        print(" -", r)
+
+    print("\n✅ Los resultados fueron guardados en 'diagnostico_pc.json'")
 
