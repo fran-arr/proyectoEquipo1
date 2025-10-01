@@ -1,13 +1,15 @@
-#Aqui importamos las librerias
+# Importamos las librerías
 import psutil
 import platform
 import os
+import json
+from datetime import datetime
 
-#En esta parte se crea un diccionario donde se almacenara los datos con su respectivas claves-valores
+# En esta parte se crea un diccionario donde se almacenarán los datos con sus respectivas claves-valores
 def obtener_datos():
     datos = {}
 
-    # Bloque de obtencion del estado de la batería
+    # Bloque de obtención del estado de la batería
     try:
         bateria = psutil.sensors_battery()
         if bateria:
@@ -20,46 +22,79 @@ def obtener_datos():
         datos["bateria"] = None
         datos["cargando"] = None
 
-    # Obtencion de la memoria RAM
+    # Obtención de la memoria RAM
     mem = psutil.virtual_memory()
     datos["ram"] = mem.percent   
 
-    # Obtencion del disco (unidad C:\ en nuestro dispositivo Windows)
+    # Obtención del disco (unidad C:\ en nuestro dispositivo Windows)
     disco = psutil.disk_usage('C:\\')
     datos["disco"] = disco.percent   
 
-    # Obtencion de la red (hacemos ping a Google para probar conectividad)
+    # Obtención de la red (hacemos ping a Google para probar conectividad)
     response = os.system("ping -n 1 google.com >nul 2>&1")
     datos["red"] = "Conectado" if response == 0 else "Sin conexión"
 
-    # Obtencion del sistema operativo y su version
+    # Obtención del sistema operativo y su versión
     datos["sistema"] = platform.system() + " " + platform.release()
 
     return datos
 
-#Llamamos método obtener_datos() y guardamos su resultado
+# Llamamos método obtener_datos() y guardamos su resultado
 def diagnosticar_pc():
     datos = obtener_datos()
-    print("Datos detectados:", datos)
+    diagnostico = ""
 
     # Reglas IF–THEN
     if datos["bateria"] is not None:
         if datos["bateria"] < 10 and not datos["cargando"]:
-            return "⚠️ Posible problema de batería: carga muy baja y no conectado al cargador."
+            diagnostico = "⚠️ Posible problema de batería: carga muy baja y no conectado al cargador."
         elif datos["bateria"] == 100 and datos["cargando"]:
-            return "ℹ️ La batería está totalmente cargada y conectada al cargador."
+            diagnostico = "ℹ️ La batería está totalmente cargada y conectada al cargador."
 
     if datos["ram"] > 90:
-        return "⚠️ La memoria RAM está muy saturada, posible problema de rendimiento."
+        diagnostico = "⚠️ La memoria RAM está muy saturada, posible problema de rendimiento."
 
     if datos["disco"] > 90:
-        return "⚠️ El disco está casi lleno, puede causar lentitud."
+        diagnostico = "⚠️ El disco está casi lleno, puede causar lentitud."
 
     if datos["red"] == "Sin conexión":
-        return "⚠️ No hay conexión a internet. Revisa el adaptador de red o la configuración."
+        diagnostico = "⚠️ No hay conexión a internet. Revisa el adaptador de red o la configuración."
 
-    return "✅ No se detectaron fallas graves en el sistema."
+    if diagnostico == "":
+        diagnostico = "✅ No se detectaron fallas graves en el sistema."
+
+    # Guardar en JSON
+    guardar_json(datos, diagnostico)
+
+    return diagnostico
+
+# Función para guardar los resultados en un archivo JSON
+def guardar_json(datos, diagnostico):
+    registro = {
+        "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "datos": datos,
+        "diagnostico": diagnostico
+    }
+
+    # Nombre del archivo
+    archivo = "diagnostico_pc.json"
+
+    # Si el archivo ya existe, cargamos los datos previos y añadimos el nuevo
+    try:
+        with open(archivo, "r", encoding="utf-8") as f:
+            historial = json.load(f)
+    except FileNotFoundError:
+        historial = []
+
+    historial.append(registro)
+
+    # Guardamos de nuevo el historial completo
+    with open(archivo, "w", encoding="utf-8") as f:
+        json.dump(historial, f, indent=4, ensure_ascii=False)
 
 # Ejecución principal
 if __name__ == "__main__":
-    print(diagnosticar_pc())
+    resultado = diagnosticar_pc()
+    print(resultado)
+    print("✅ Los resultados fueron guardados en 'diagnostico_pc.json'")
+
